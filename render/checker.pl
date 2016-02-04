@@ -2,7 +2,7 @@
 
 use POSIX;
 
-my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncing", "hypnosis", "fireworks", "snow", "snowsingle"); 
+my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncingballs", "hypnosis", "fireworks", "snow", "snowsingle"); 
 my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle"); 
 
 my %fast_times; 
