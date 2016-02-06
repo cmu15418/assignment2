@@ -23,6 +23,11 @@ print ("--------------\n");
 print ("Running tests:\n");
 print ("--------------\n");
 
+my $render_ref = "render_ref";
+if (-d "/usr/local/cuda/") {
+    $render_ref = "render_ref_latedays";
+}
+
 foreach my $scene (@scene_names) {
     print ("\nScene : $scene\n");
     my @sys_stdout = system ("./render -c $scene -s 768 > ./logs/correctness_${scene}.log");
@@ -45,7 +50,7 @@ foreach my $scene (@scene_names) {
         print ("Your time : $your_time\n");
         $your_times{$scene} = $your_time;
 
-        my $fast_time = `./render_ref -r cuda -b 0:4 $scene -s 768 | tee ./logs/time_${scene}.log | grep Total:`;
+        my $fast_time = `./$render_ref -r cuda -b 0:4 $scene -s 768 | tee ./logs/time_${scene}.log | grep Total:`;
         chomp($fast_time);
         $fast_time =~ s/^[^0-9]*//;
         $fast_time =~ s/ ms.*//;

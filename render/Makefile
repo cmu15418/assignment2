@@ -21,7 +21,7 @@ HOSTNAME=$(shell hostname)
 LIBS       :=
 FRAMEWORKS := 
 
-ifeq ($(HOSTNAME), latedays.andrew.cmu.edu)
+ifneq ($(wildcard /usr/local/cuda/.*),)
 # Building on Latedays
 NVCCFLAGS=-O3 -m64 -arch compute_20
 LIBS += GL glut cudart
