@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use POSIX;
+use Sys::Hostname;
 
 my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncingballs", "hypnosis", "fireworks", "snow", "snowsingle"); 
 my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle"); 
@@ -24,7 +25,7 @@ print ("Running tests:\n");
 print ("--------------\n");
 
 my $render_ref = "render_ref";
-if (-d "/usr/local/cuda/") {
+if (hostname() eq "latedays.andrew.cmu.edu") {
     $render_ref = "render_ref_latedays";
 }
 
