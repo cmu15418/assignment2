@@ -55,6 +55,7 @@ foreach my $scene (@scene_names) {
         chomp($fast_time);
         $fast_time =~ s/^[^0-9]*//;
         $fast_time =~ s/ ms.*//;
+        $fast_time *= 2.1;
 
         print ("Reference Time: $fast_time\n");
         $fast_times{$scene} = $fast_time;
