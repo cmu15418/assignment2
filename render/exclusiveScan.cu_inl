@@ -1,4 +1,49 @@
 
+// exclusiveScan.cu_inl
+
+// This is a shared-memory implementation of exclusive scan. Note that the
+// exclusive scan you implemented in Part 1 uses slower *global* memory, and has
+// overhead from performing multiple kernel launches.
+// Because it uses shared memory, it must be run within a single thread block.
+
+
+// REQUIREMENTS:
+//  - Input array must have power-of-two length.
+//  - Number of threads in the thread block must be the size of the array!
+//  - SCAN_BLOCK_DIM is both the number of threads in the block (must be power of 2) 
+//         and the number of elements that will be scanned. 
+//          You should define this in your cudaRenderer.cu file, 
+//          based on your implementation.
+//  - The parameter sScratch should be a pointer to an array with 2*SCAN_BLOCK_DIM elements
+//  - The 3 arrays should be in shared memory. 
+
+// ================= USAGE (in cudaRenderer.cu) =====================
+
+// at the top of the file:
+
+// #define SCAN_BLOCK_DIM   BLOCKSIZE  // needed by sharedMemExclusiveScan implementation
+// #include "exclusiveScan.cu_inl"
+
+// ...
+
+// in a kernel:
+
+// If you're using 2D indices, compute a linear thread index as folows.
+// NOTE: scan assumes that every 32 adjacent linear thread indices 
+// (0-31, 32-63, ...) form a warp, which means they execute in lockstep.
+
+// If you do linearThreadIndex = threadIdx.x * blockDim.x + threadIdx.y;
+// you will get a linear thread index, but it won't be sorted into warps,
+// which will break scan!
+
+// int linearThreadIndex =  threadIdx.y * blockDim.y + threadIdx.x;
+
+// __shared__ uint prefixSumInput[BLOCKSIZE];
+// __shared__ uint prefixSumOutput[BLOCKSIZE];
+// __shared__ uint prefixSumScratch[2 * BLOCKSIZE];
+// sharedMemExclusiveScan(linearThreadIndex, prefixSumInput, prefixSumOutput, prefixSumScratch, BLOCKSIZE);
+
+
 #define LOG2_WARP_SIZE 5U
 #define WARP_SIZE (1U << LOG2_WARP_SIZE)
 
@@ -6,6 +51,10 @@
 //assuming size <= WARP_SIZE
 inline __device__ uint
 warpScanInclusive(int threadIndex, uint idata, volatile uint *s_Data, uint size){
+    // Note some of the calculations are obscure because they are optimized.
+    // For example, (threadIndex & (size - 1)) computes threadIndex % size,
+    // which works, assuming size is a power of 2.
+
     uint pos = 2 * threadIndex - (threadIndex & (size - 1));
     s_Data[pos] = 0;
     pos += size;
