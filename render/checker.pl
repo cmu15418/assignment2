@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 
 use POSIX;
-use Sys::Hostname;
 
-my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncingballs", "hypnosis", "fireworks", "snow", "snowsingle"); 
-my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle"); 
+my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncingballs", "hypnosis", "fireworks", "snow", "snowsingle");
+my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle");
 
-my %fast_times; 
+my %fast_times;
 
 my $perf_points = 11;
 my $correctness_points = 2;
@@ -18,14 +17,14 @@ my %your_times;
 `mkdir -p logs`;
 `rm -rf logs/*`;
 
-
 print "\n";
 print ("--------------\n");
-print ("Running tests:\n");
+my $hostname = `hostname`;
+print ("Running tests on $hostname\n");
 print ("--------------\n");
 
 my $render_ref = "render_ref";
-if (hostname() eq "latedays.andrew.cmu.edu") {
+if (index(lc($hostname),"ghc") == -1) {
     $render_ref = "render_ref_latedays";
 }
 
@@ -42,7 +41,7 @@ foreach my $scene (@scene_names) {
         $correct{$scene} = 0;
     }
 
-    if (${scene} ~~ @score_scene_names) { 
+    if (${scene} ~~ @score_scene_names) {
         my $your_time = `./render -r cuda -b 0:4 $scene -s 768 | tee ./logs/time_${scene}.log | grep Total:`;
         chomp($your_time);
         $your_time =~ s/^[^0-9]*//;
@@ -55,7 +54,6 @@ foreach my $scene (@scene_names) {
         chomp($fast_time);
         $fast_time =~ s/^[^0-9]*//;
         $fast_time =~ s/ ms.*//;
-        $fast_time *= 2.1;
 
         print ("Reference Time: $fast_time\n");
         $fast_times{$scene} = $fast_time;
@@ -78,8 +76,8 @@ my $total_score = 0;
 
 foreach my $scene (@score_scene_names){
     my $score;
-    my $your_time = $your_times{$scene}; 
-    my $fast_time = $fast_times{$scene}; 
+    my $your_time = $your_times{$scene};
+    my $fast_time = $fast_times{$scene};
 
     if ($correct{$scene}) {
         if ($your_time <= 1.20 * $fast_time) {
@@ -101,6 +99,6 @@ foreach my $scene (@score_scene_names){
     $total_score += $score;
 }
 print $dashes;
-printf ("| %-15s   %-15s | %-15s | %-15s |\n", "", "", "Total score:", 
+printf ("| %-15s   %-15s | %-15s | %-15s |\n", "", "", "Total score:",
     $total_score . "/" . ($perf_points+$correctness_points) * ($#score_scene_names + 1));
 print $dashes;

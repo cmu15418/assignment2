@@ -621,7 +621,7 @@ CudaRenderer::clearImage() {
     } else {
         kernelClearImage<<<gridDim, blockDim>>>(1.f, 1.f, 1.f, 1.f);
     }
-    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
 }
 
 // advanceAnimation --
@@ -644,7 +644,7 @@ CudaRenderer::advanceAnimation() {
     } else if (sceneName == FIREWORKS) { 
         kernelAdvanceFireWorks<<<gridDim, blockDim>>>(); 
     }
-    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
 }
 
 void
@@ -655,5 +655,5 @@ CudaRenderer::render() {
     dim3 gridDim((numCircles + blockDim.x - 1) / blockDim.x);
 
     kernelRenderCircles<<<gridDim, blockDim>>>();
-    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
 }
