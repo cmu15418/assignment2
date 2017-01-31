@@ -3,11 +3,11 @@
 use POSIX;
 
 my @scene_names = ("rgb", "rgby", "rand10k", "rand100k", "biglittle", "littlebig", "pattern", "bouncingballs", "hypnosis", "fireworks", "snow", "snowsingle");
-my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle");
+my @score_scene_names = ("rgb", "rand10k", "rand100k", "pattern", "snowsingle", "biglittle");
 
 my %fast_times;
 
-my $perf_points = 11;
+my $perf_points = 10;
 my $correctness_points = 2;
 
 my %correct;
@@ -30,7 +30,7 @@ if (index(lc($hostname),"ghc") == -1) {
 
 foreach my $scene (@scene_names) {
     print ("\nScene : $scene\n");
-    my @sys_stdout = system ("./render -c $scene -s 768 > ./logs/correctness_${scene}.log");
+    my @sys_stdout = system ("./render -c $scene -s 1024 > ./logs/correctness_${scene}.log");
     my $return_value  = $?;
     if ($return_value == 0) {
         print ("Correctness passed!\n");
@@ -42,7 +42,7 @@ foreach my $scene (@scene_names) {
     }
 
     if (${scene} ~~ @score_scene_names) {
-        my $your_time = `./render -r cuda -b 0:4 $scene -s 768 | tee ./logs/time_${scene}.log | grep Total:`;
+        my $your_time = `./render -r cuda -b 0:4 $scene -s 1024 | tee ./logs/time_${scene}.log | grep Total:`;
         chomp($your_time);
         $your_time =~ s/^[^0-9]*//;
         $your_time =~ s/ ms.*//;
@@ -50,7 +50,7 @@ foreach my $scene (@scene_names) {
         print ("Your time : $your_time\n");
         $your_times{$scene} = $your_time;
 
-        my $fast_time = `./$render_ref -r cuda -b 0:4 $scene -s 768 | tee ./logs/time_${scene}.log | grep Total:`;
+        my $fast_time = `./$render_ref -r cuda -b 0:4 $scene -s 1024 | tee ./logs/time_${scene}.log | grep Total:`;
         chomp($fast_time);
         $fast_time =~ s/^[^0-9]*//;
         $fast_time =~ s/ ms.*//;
