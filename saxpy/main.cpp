@@ -54,8 +54,6 @@ int main(int argc, char** argv)
     float* resultarray = new float[N];
 
     // load X, Y, store result
-    int totalBytes = sizeof(float) * 3 * N;
-
     for (int i=0; i<N; i++) {
         xarray[i] = yarray[i] = i % 10;
         resultarray[i] = 0.f;

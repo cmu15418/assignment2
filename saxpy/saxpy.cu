@@ -33,25 +33,44 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) 
     float* device_result;
 
     //
-    // TODO allocate device memory buffers on the GPU using cudaMalloc
+    // TODO: allocate device memory buffers on the GPU using
+    // cudaMalloc.  The started code issues warnings on build because
+    // these buffers are used in the call to saxpy_kernel below
+    // without being initialized.
     //
 
-    // start timing after allocation of device memory
+    // start timing after allocation of device memory.
     double startTime = CycleTimer::currentSeconds();
 
     //
-    // TODO copy input arrays to the GPU using cudaMemcpy
+    // TODO: copy input arrays to the GPU using cudaMemcpy
     //
 
-    // run kernel
+    //
+    // TODO: insert time here to begin timing only the kernel
+    //
+
+    // run saxpy_kernel on the GPU
     saxpy_kernel<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
-    cudaThreadSynchronize();
 
     //
-    // TODO copy result from GPU using cudaMemcpy
+    // TODO: insert timer here to time only the kernel.  Since the
+    // kernel will run asynchronously with the calling CPU thread, you
+    // need to call cudaThreadSynchronize() before your timer to
+    // ensure the kernel running on the GPU has completed.  (Otherwise
+    // you will incorrectly observe that almost no time elapses!)
+    //
+    //cudaThreadSynchronize();
+
+
+    //
+    // TODO: copy result from GPU using cudaMemcpy
     //
 
-    // end timing after result has been copied back into host memory
+    // end timing after result has been copied back into host memory.
+    // The time elapsed between startTime and endTime is the total
+    // time to copy data to the GPU, run the kernel, and copy the
+    // result back to the CPU
     double endTime = CycleTimer::currentSeconds();
 
     cudaError_t errCode = cudaPeekAtLastError();
@@ -60,9 +79,11 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) 
     }
 
     double overallDuration = endTime - startTime;
-    printf("Overall: %.3f ms\t\t[%.3f GB/s]\n", 1000.f * overallDuration, toBW(totalBytes, overallDuration));
+    printf("Overall time: %.3f ms\t\t[%.3f GB/s]\n", 1000.f * overallDuration, toBW(totalBytes, overallDuration));
 
+    //
     // TODO free memory buffers on the GPU
+    //
 }
 
 void
