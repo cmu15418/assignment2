@@ -506,8 +506,8 @@ CudaRenderer::setup() {
         cudaDeviceProp deviceProps;
         cudaGetDeviceProperties(&deviceProps, i);
         name = deviceProps.name;
-        if (name.compare("GeForce GTX 480") == 0
-            || name.compare("GeForce GTX 670") == 0
+        if (name.compare("GeForce GTX 1080") == 0
+            || name.compare("Tesla K40m") == 0
             || name.compare("GeForce GTX 780") == 0)
         {
             isFastGPU = true;
