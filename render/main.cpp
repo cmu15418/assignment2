@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
     int benchmarkFrameStart = -1;
     int benchmarkFrameEnd = -1;
-    int imageSize = 768;
+    int imageSize = 1024;
 
     std::string sceneNameStr;
     std::string frameFilename;

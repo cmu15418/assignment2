@@ -494,7 +494,6 @@ void
 CudaRenderer::setup() {
 
     int deviceCount = 0;
-    bool isFastGPU = false;
     std::string name;
     cudaError_t err = cudaGetDeviceCount(&deviceCount);
 
@@ -506,12 +505,6 @@ CudaRenderer::setup() {
         cudaDeviceProp deviceProps;
         cudaGetDeviceProperties(&deviceProps, i);
         name = deviceProps.name;
-        if (name.compare("GeForce GTX 1080") == 0
-            || name.compare("Tesla K40m") == 0
-            || name.compare("GeForce GTX 780") == 0)
-        {
-            isFastGPU = true;
-        }
 
         printf("Device %d: %s\n", i, deviceProps.name);
         printf("   SMs:        %d\n", deviceProps.multiProcessorCount);
@@ -519,13 +512,6 @@ CudaRenderer::setup() {
         printf("   CUDA Cap:   %d.%d\n", deviceProps.major, deviceProps.minor);
     }
     printf("---------------------------------------------------------\n");
-    if (!isFastGPU)
-    {
-        printf("WARNING: "
-               "You're not running on a fast GPU, please consider using "
-               "NVIDIA GTX 480, 670 or 780.\n");
-        printf("---------------------------------------------------------\n");
-    }
     
     // By this time the scene should be loaded.  Now copy all the key
     // data structures into device memory so they are accessible to
