@@ -169,7 +169,7 @@ CheckBenchmark(
             if (dumpFrames) {
                 char filename[1024];
                 sprintf(filename, "%s_%04d.ppm", frameFilename.c_str(), frame);
-                writePPMImage(ref_renderer->getImage(), filename);
+                writePPMImage(cuda_renderer->getImage(), filename);
                 //renderer->dumpParticles("snow.par");
             }
 
