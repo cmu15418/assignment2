@@ -6,7 +6,7 @@ FILES= report.pdf \
 XFILE = render/snow.par
 
 handin.tar: clean
-	tar cvf handin.tar --exclude=$(XFILE) handin.tar $(FILES)
+	tar cvf handin.tar --exclude=$(XFILE) $(FILES)
 clean:
 	(cd saxpy; make clean)
 	(cd scan; make clean)
