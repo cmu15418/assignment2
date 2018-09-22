@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 
     double cudaTime = 50000.;
 
-    if (input.compare("scan") == 0) { // test exclusive scan
+    if (test.compare("scan") == 0) { // test exclusive scan
         // run CUDA implementation
         for (int i=0; i<3; i++) {
             if (useThrust)
